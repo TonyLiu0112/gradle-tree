@@ -2,7 +2,8 @@ package org.jetbrains.plugins.template.context
 
 import com.tony.support.GradleTreeParser
 import com.tony.support.model.TreeNode
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils.contains
+import org.apache.commons.lang3.StringUtils.isEmpty
 import org.gradle.tooling.internal.consumer.ConnectorServices
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -66,10 +67,7 @@ class FileContext {
 
             for (classpath in classpaths) {
                 createTreeView(
-                    treeContext,
-                    treeContext.TREE_NODE[classpath]!!,
-                    virtualRoot,
-                    ""
+                    treeContext, treeContext.TREE_NODE[classpath]!!, virtualRoot, ""
                 )
             }
 
@@ -78,24 +76,14 @@ class FileContext {
         }
 
         private fun createTreeView(
-            treeContext: TreeContext,
-            node: TreeNode,
-            rootNode: DefaultMutableTreeNode,
-            scope: String
+            treeContext: TreeContext, node: TreeNode, rootNode: DefaultMutableTreeNode, scope: String
         ): DefaultMutableTreeNode {
             return if (node.deep == -1) {
 
                 for (child in node.children) {
-                    for (i in 0 until rootNode.childCount) {
-                        if (StringUtils.contains(
-                                (rootNode.getChildAt(i) as DefaultMutableTreeNode).userObject.toString(),
-                                child.artifactId
-                            )
-                        ) {
-                            continue
-                        }
+                    if (isProcessedArtifactId(rootNode, child)) {
+                        continue
                     }
-
                     child.scope = getScope(treeContext, child)
                     createTreeView(treeContext, child, rootNode, child.scope)
                 }
@@ -117,6 +105,19 @@ class FileContext {
             }
         }
 
+        private fun isProcessedArtifactId(rootNode: DefaultMutableTreeNode, child: TreeNode): Boolean {
+            for (i in 0 until rootNode.childCount) {
+                if (contains(
+                        (rootNode.getChildAt(i) as DefaultMutableTreeNode).userObject.toString(),
+                        child.artifactId
+                    )
+                ) {
+                    return true
+                }
+            }
+            return false
+        }
+
         private fun getScope(treeContext: TreeContext, child: TreeNode): String {
             for (scope in scopes) {
                 val treeNode = treeContext.TREE_NODE[scope]
@@ -125,7 +126,7 @@ class FileContext {
                 }
 
                 for (scopeNode in treeNode.children) {
-                    if (StringUtils.contains(scopeNode.artifactId, child.artifactId)) {
+                    if (contains(scopeNode.artifactId, child.artifactId)) {
                         return scope
                     }
                 }
@@ -142,9 +143,7 @@ class FileContext {
         }
 
         private fun execGradleCommand(filePath: String, treeContext: TreeContext) {
-            val connection = ConnectorServices.createConnector()
-                .forProjectDirectory(File(filePath))
-                .connect()
+            val connection = ConnectorServices.createConnector().forProjectDirectory(File(filePath)).connect()
 
             val build = connection.newBuild()
             build.forTasks("dependencies")
@@ -165,7 +164,7 @@ class FileContext {
 
             splitItem.forEach { line ->
                 if (inFragement) {
-                    if (StringUtils.isEmpty(line)) {
+                    if (isEmpty(line)) {
 
                         val gradleTreeParser = GradleTreeParser()
                         val treeNode = gradleTreeParser.convert2Tree(fragments)
