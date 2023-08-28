@@ -5,6 +5,7 @@
     <vendor>JetBrains</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.intellij.groovy</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 

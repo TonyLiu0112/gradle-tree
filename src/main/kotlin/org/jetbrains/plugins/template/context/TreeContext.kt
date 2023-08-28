@@ -11,7 +11,7 @@ class TreeContext {
     val TREE_NODE = mutableMapOf<String, TreeNode>()
 
     // key: tree content, value: metadata of node
-    val TREE_METADATA = mutableMapOf<String, TreeMetadata>()
+    val TREE_METADATA = mutableMapOf<String, TreeNode>()
 
     // swing obj.
     var TREE_VIEW: DefaultMutableTreeNode? = null

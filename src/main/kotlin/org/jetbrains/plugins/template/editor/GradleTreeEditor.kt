@@ -21,25 +21,35 @@ import java.beans.PropertyChangeListener
 import java.io.File
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
 
 class GradleTreeEditor(
     private val project: Project,
     private val file: VirtualFile,
-    document: Document
+    private val document: Document
 ) : FileEditor {
 
-    private var editor: Editor
-    private var panel: JPanel
-    private var gradleTreeForm: GradleTreeForm
+    private lateinit var editor: Editor
+    private lateinit var panel: JPanel
+    private lateinit var gradleTreeForm: GradleTreeForm
     private var dir: String = File(file.path).parent
     private val myUserDataHolder = UserDataHolderBase()
 
     init {
+        SwingUtilities.invokeLater {
+            doInit()
+        }
+    }
+
+    private fun doInit() {
         editor = createEditorComponent()
         gradleTreeForm = GradleTreeForm()
-        panel = createPanel()
+        gradleTreeForm.initFile(project, file)
+
+
         document.addDocumentListener(DocumentChangeListener(gradleTreeForm))
+        panel = createPanel()
     }
 
     override fun <T : Any?> getUserData(key: Key<T>): T? {
@@ -54,6 +64,9 @@ class GradleTreeEditor(
     }
 
     override fun getComponent(): JComponent {
+        if (!::panel.isInitialized) {
+            doInit()
+        }
         return panel
     }
 

@@ -1,7 +1,11 @@
 package org.jetbrains.plugins.template.editWindow
 
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.lang3.StringUtils.*
 import org.jetbrains.plugins.template.context.FileContext
+import org.jetbrains.plugins.template.services.PsiGradleService
 import org.jetbrains.plugins.template.utils.NodeTextUtils
 import org.jetbrains.plugins.template.utils.ObjUtils
 import java.awt.Component
@@ -46,6 +50,9 @@ class GradleTreeForm {
 
     private var mouseClickListener: MouseClickListener? = null
 
+    private var project: Project? = null
+    private var virtualFile: VirtualFile? = null
+
     init {
         waringIcon = createImageIcon("static/images/jinggao.png")
 
@@ -60,6 +67,11 @@ class GradleTreeForm {
 
         bindExpandBtnClick()
         bindCollapseBtnClick()
+    }
+
+    fun initFile(project: Project, virtualFile: VirtualFile) {
+        this.project = project
+        this.virtualFile = virtualFile
     }
 
     fun markRefreshUIChanged() {
@@ -228,6 +240,9 @@ class GradleTreeForm {
 
 
         for (n in 0 until virtualRoot.childCount) {
+            if (n >= virtualRoot.childCount) {
+                continue
+            }
             val rootNode = virtualRoot.getChildAt(n) as DefaultMutableTreeNode
 
             if (contains(rootNode.userObject.toString(), searchInput!!.text)) {
@@ -316,17 +331,6 @@ class GradleTreeForm {
         }
     }
 
-    private fun showRightClientMenu(component: Component, x: Int, y: Int, selectedNode: DefaultMutableTreeNode) {
-        val popupMenu = JPopupMenu()
-        val menuItem = JMenuItem("Exclude")
-        menuItem.addActionListener { e: ActionEvent? ->
-            // 在这里执行右键菜单项的操作
-            JOptionPane.showMessageDialog(component, "Performing action on node: " + selectedNode.userObject)
-        }
-        popupMenu.add(menuItem)
-        popupMenu.show(component, x, y)
-    }
-
     private fun createImageIcon(fileName: String): ImageIcon? {
         return try {
             val classLoader: ClassLoader = GradleTreeForm::class.java.getClassLoader()
@@ -374,5 +378,18 @@ class GradleTreeForm {
             }
         }
 
+    }
+
+    private fun showRightClientMenu(component: Component, x: Int, y: Int, selectedNode: DefaultMutableTreeNode) {
+        val popupMenu = JPopupMenu()
+        val menuItem = JMenuItem("Exclude")
+        menuItem.addActionListener { e: ActionEvent? ->
+            // 在这里执行右键菜单项的操作
+            JOptionPane.showMessageDialog(component, "Performing action on node: " + selectedNode.userObject)
+            val psiGradleService = project!!.getService(PsiGradleService::class.java)
+            psiGradleService.exclude(project!!, virtualFile!!, selectedNode.userObject.toString())
+        }
+        popupMenu.add(menuItem)
+        popupMenu.show(component, x, y)
     }
 }

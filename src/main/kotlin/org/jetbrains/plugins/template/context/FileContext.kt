@@ -96,6 +96,7 @@ class FileContext {
                 )
                 treeContext.ARTIFACT_TEXT_MAP[node.artifactId] = node.groupId + " : " + node.artifactId
                 treeContext.ARTIFACT_NODES_MAP.put(node.artifactId, node)
+                treeContext.TREE_METADATA[node.artifactId] = node
                 rootNode.add(treeNode)
                 for (child in node.children) {
                     child.scope = scope
