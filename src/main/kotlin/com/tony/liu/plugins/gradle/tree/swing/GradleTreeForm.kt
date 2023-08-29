@@ -363,9 +363,9 @@ class GradleTreeForm {
         val menuItem = JMenuItem("Exclude")
         menuItem.addActionListener { e: ActionEvent? ->
             // 在这里执行右键菜单项的操作
-            JOptionPane.showMessageDialog(component, "Performing action on node: " + selectedNode.userObject)
+//            JOptionPane.showMessageDialog(component, "Performing action on node: " + selectedNode.userObject)
             val psiGradleService = project!!.getService(PsiGradleService::class.java)
-            psiGradleService.exclude(project!!, virtualFile!!, selectedNode.userObject.toString())
+            psiGradleService.exclude(project!!, virtualFile!!, selectedNode)
         }
         popupMenu.add(menuItem)
         popupMenu.show(component, x, y)
