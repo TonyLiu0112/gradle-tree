@@ -18,7 +18,7 @@ private const val virtualNode: String = "virtualRoot"
 class PsiGradleService {
 
     fun exclude(project: Project, virtualFile: VirtualFile, selectNode: DefaultMutableTreeNode) {
-        val parent: javax.swing.tree.TreeNode? = selectNode.parent ?: return
+        val parent: javax.swing.tree.TreeNode = selectNode.parent ?: return
 
         val parentNode = parent as DefaultMutableTreeNode
         if (virtualNode == parentNode.userObject.toString()) {
