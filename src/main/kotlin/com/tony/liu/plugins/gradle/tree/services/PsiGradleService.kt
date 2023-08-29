@@ -18,37 +18,41 @@ private const val virtualNode: String = "virtualRoot"
 class PsiGradleService {
 
     fun exclude(project: Project, virtualFile: VirtualFile, selectNode: DefaultMutableTreeNode) {
-        var parent: javax.swing.tree.TreeNode? = selectNode.parent ?: return
+        val parent: javax.swing.tree.TreeNode? = selectNode.parent ?: return
 
         val parentNode = parent as DefaultMutableTreeNode
         if (virtualNode == parentNode.userObject.toString()) {
             return
         }
 
-        var rootNode = getRootNode(selectNode)
+        val rootNode = getRootNode(selectNode)
 
         val fileDir = File(virtualFile.path).parent
         val selectMetadata = getNodeArtifactId(selectNode, fileDir)
         val rootMetadata = getNodeArtifactId(rootNode, fileDir)
 
-        var text = virtualFile.findDocument()!!.text
+        val text = virtualFile.findDocument()!!.text
 
-        var lines = text.split("\n")
+        val lines = text.split("\n")
 
         var newText = ""
         val groupArtifact = rootMetadata.groupId + ":" + rootMetadata.artifactId
+        var changed = false
         for (element in lines) {
             var line = element
 
             if (contains(line, groupArtifact)) {
                 line += " exclude(group: '" + selectMetadata.groupId + "', module: '" + selectMetadata.artifactId + "')"
+                changed = true
             }
 
             newText += line + "\n"
         }
 
-        ApplicationManager.getApplication().runWriteAction {
-            virtualFile.findDocument()!!.setText(newText)
+        if (changed) {
+            ApplicationManager.getApplication().runWriteAction {
+                virtualFile.findDocument()!!.setText(newText)
+            }
         }
 
     }
@@ -62,7 +66,7 @@ class PsiGradleService {
                 groupArtifact.split(":")[1].trim()
             }
         val treeNode = FileContext.FILE_CONTEXT_MAP[fileDir]!!.TREE_METADATA[artifactId]
-        return Metadata(treeNode!!.groupId, treeNode!!.artifactId)
+        return Metadata(treeNode!!.groupId, treeNode.artifactId)
     }
 
     private fun getRootNode(treeNode: DefaultMutableTreeNode): DefaultMutableTreeNode {
