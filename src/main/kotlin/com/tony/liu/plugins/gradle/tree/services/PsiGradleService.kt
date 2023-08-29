@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.findDocument
 import com.tony.liu.plugins.gradle.tree.context.FileContext
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils.contains
+import org.apache.commons.lang3.StringUtils.isNotBlank
 import java.io.File
 import javax.swing.tree.DefaultMutableTreeNode
 
@@ -17,12 +18,17 @@ private const val virtualNode: String = "virtualRoot"
 @Service(Service.Level.PROJECT)
 class PsiGradleService {
 
-    fun exclude(project: Project, virtualFile: VirtualFile, selectNode: DefaultMutableTreeNode) {
-        val parent: javax.swing.tree.TreeNode = selectNode.parent ?: return
+    fun exclude(
+        project: Project,
+        virtualFile: VirtualFile,
+        selectNode: DefaultMutableTreeNode,
+        fileType: Int
+    ): Boolean {
+        val parent: javax.swing.tree.TreeNode = selectNode.parent ?: return false
 
         val parentNode = parent as DefaultMutableTreeNode
         if (virtualNode == parentNode.userObject.toString()) {
-            return
+            return false
         }
 
         val rootNode = getRootNode(selectNode)
@@ -38,15 +44,35 @@ class PsiGradleService {
         var newText = ""
         val groupArtifact = rootMetadata.groupId + ":" + rootMetadata.artifactId
         var changed = false
-        for (element in lines) {
-            var line = element
+        val skipLines: ArrayList<Int> = arrayListOf()
 
-            if (contains(line, groupArtifact)) {
-                line += " exclude(group: '" + selectMetadata.groupId + "', module: '" + selectMetadata.artifactId + "')"
+        for (i in lines.indices) {
+            if (skipLines.contains(i)) {
+                continue
+            }
+
+            val line = lines[i]
+
+            var newLine = line
+
+            if (contains(newLine, groupArtifact)) {
+                if (fileType == 0) {
+                    // groovy format
+                    newLine += " exclude(group: '" + selectMetadata.groupId + "', module: '" + selectMetadata.artifactId + "')"
+                } else {
+                    // kotlin format
+                    val ktsExcludeBlock = getKtsExcludeBlock(lines, i, selectMetadata)
+                    skipLines.addAll(ktsExcludeBlock.skipLines)
+                    if (isNotBlank(ktsExcludeBlock.str)) {
+                        newLine = ktsExcludeBlock.str
+                    }
+                }
                 changed = true
             }
 
-            newText += line + "\n"
+            if (i != lines.size - 1) {
+                newText += newLine + "\n"
+            }
         }
 
         if (changed) {
@@ -55,6 +81,55 @@ class PsiGradleService {
             }
         }
 
+        return changed
+    }
+
+    private fun getKtsExcludeBlock(lines: List<String>, lineNum: Int, selectMetadata: Metadata): LineMeta {
+        var newLine = ""
+        val skipLines: ArrayList<Int> = arrayListOf()
+        val currentLine = lines[lineNum]
+        val space = currentLine.takeWhile { it == ' ' }
+        if (!currentLine.contains("{") && !lines[lineNum + 1].contains("{")) {
+            newLine += "$currentLine {\n"
+            newLine += space + "    exclude(\"" + selectMetadata.groupId + "\", \"" + selectMetadata.artifactId + "\")\n"
+            newLine += "$space}"
+        } else {
+            // 获取已存在exclude
+            val lineMeta = getExcludes(space, lines, lineNum)
+            skipLines.addAll(lineMeta.skipLines)
+            var excludeBlockLine = lineMeta.str
+            excludeBlockLine += space + "    exclude(\"" + selectMetadata.groupId + "\", \"" + selectMetadata.artifactId + "\")\n"
+            newLine += StringUtils.substringBefore(currentLine, "{") + " {\n"
+            newLine += excludeBlockLine
+            newLine += "$space}"
+        }
+
+        return LineMeta(newLine, skipLines)
+    }
+
+    private fun getExcludes(space: String, lines: List<String>, lineNum: Int): LineMeta {
+        var exists = ""
+        val skipLines: ArrayList<Int> = arrayListOf()
+        for (i in lineNum until lines.size) {
+            skipLines.add(i)
+
+            val line = lines[i]
+
+            if (line.contains("}")) {
+                break
+            }
+
+            val excludeList = StringUtils.substringsBetween(line, "exclude(", ")")
+            if (excludeList == null || excludeList.isEmpty()) {
+                continue
+            }
+
+            for (s in excludeList) {
+                exists += "$space    exclude($s)\n"
+            }
+
+        }
+        return LineMeta(exists, skipLines)
     }
 
     private fun getNodeArtifactId(node: DefaultMutableTreeNode, fileDir: String): Metadata {
@@ -81,5 +156,7 @@ class PsiGradleService {
         val groupId: String,
         val artifactId: String
     )
+
+    private data class LineMeta(val str: String, val skipLines: List<Int>)
 
 }

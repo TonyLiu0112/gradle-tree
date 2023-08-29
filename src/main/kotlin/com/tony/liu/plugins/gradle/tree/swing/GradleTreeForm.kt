@@ -9,7 +9,6 @@ import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
 import com.tony.liu.plugins.gradle.tree.utils.ObjUtils
 import org.apache.commons.lang3.StringUtils.*
 import java.awt.Component
-import java.awt.event.ActionEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
@@ -49,6 +48,7 @@ class GradleTreeForm {
 
     private var project: Project? = null
     private var virtualFile: VirtualFile? = null
+    private var fileType: Int = 0
 
     init {
 
@@ -68,6 +68,11 @@ class GradleTreeForm {
     fun initFile(project: Project, virtualFile: VirtualFile) {
         this.project = project
         this.virtualFile = virtualFile
+        fileType = if (virtualFile.name.endsWith(".kts")) {
+            1
+        } else {
+            0
+        }
     }
 
     fun markRefreshUIChanged() {
@@ -361,13 +366,30 @@ class GradleTreeForm {
     private fun showRightClientMenu(component: Component, x: Int, y: Int, selectedNode: DefaultMutableTreeNode) {
         val popupMenu = JPopupMenu()
         val menuItem = JMenuItem("Exclude")
-        menuItem.addActionListener { e: ActionEvent? ->
-            // 在这里执行右键菜单项的操作
-//            JOptionPane.showMessageDialog(component, "Performing action on node: " + selectedNode.userObject)
+        menuItem.addActionListener {
             val psiGradleService = project!!.getService(PsiGradleService::class.java)
-            psiGradleService.exclude(project!!, virtualFile!!, selectedNode)
+            val success = psiGradleService.exclude(project!!, virtualFile!!, selectedNode, fileType)
+            if (success) {
+                deleteNodeAndChildren(leftTree!!, TreePath(selectedNode))
+            }
         }
         popupMenu.add(menuItem)
         popupMenu.show(component, x, y)
+    }
+
+    private fun deleteNodeAndChildren(tree: JTree, nodePath: TreePath) {
+        val model = tree.model as DefaultTreeModel
+        val node = nodePath.lastPathComponent as DefaultMutableTreeNode
+
+        // Remove the node from its parent
+        val parent = node.parent as DefaultMutableTreeNode
+        parent.getIndex(node)
+        model.removeNodeFromParent(node)
+
+        // Recursively delete children
+        for (i in node.childCount - 1 downTo 0) {
+            val child = node.getChildAt(i) as DefaultMutableTreeNode
+            model.removeNodeFromParent(child)
+        }
     }
 }
