@@ -1,8 +1,8 @@
-package org.jetbrains.plugins.template.context
+package com.tony.liu.plugins.gradle.tree.context
 
 import com.google.common.collect.ArrayListMultimap
 import com.tony.support.model.TreeNode
-import org.jetbrains.plugins.template.model.TreeMetadata
+import com.tony.liu.plugins.gradle.tree.model.TreeMetadata
 import javax.swing.tree.DefaultMutableTreeNode
 
 class TreeContext {

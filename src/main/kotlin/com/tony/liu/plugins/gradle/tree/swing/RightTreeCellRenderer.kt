@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.template.editWindow
+package com.tony.liu.plugins.gradle.tree.swing
 
 import org.apache.commons.lang3.StringUtils
 import java.awt.Color

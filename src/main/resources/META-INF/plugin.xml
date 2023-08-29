@@ -1,8 +1,8 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.jetbrains.plugins.template</id>
-    <name>Greet Tree</name>
-    <vendor>JetBrains</vendor>
+    <id>org.tony.liu.gradle.tree</id>
+    <name>Gradle Tree</name>
+    <vendor>Tony Liu</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>org.intellij.groovy</depends>
@@ -10,7 +10,7 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileEditorProvider implementation="org.jetbrains.plugins.template.editor.GradleTreeEditorProvider"/>
+        <fileEditorProvider implementation="com.tony.liu.plugins.gradle.tree.editor.GradleTreeEditorProvider"/>
     </extensions>
     
 </idea-plugin>

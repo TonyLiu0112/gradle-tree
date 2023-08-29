@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.template.utils
+package com.tony.liu.plugins.gradle.tree.utils
 
 import org.apache.commons.lang3.StringUtils
 

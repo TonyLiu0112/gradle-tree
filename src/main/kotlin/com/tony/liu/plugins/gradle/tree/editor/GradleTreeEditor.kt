@@ -1,9 +1,8 @@
-package org.jetbrains.plugins.template.editor
+package com.tony.liu.plugins.gradle.tree.editor
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
-import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -12,16 +11,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
+import com.tony.liu.plugins.gradle.tree.context.FileContext
+import com.tony.liu.plugins.gradle.tree.listeners.DocumentChangeListener
+import com.tony.liu.plugins.gradle.tree.swing.GradleTreeForm
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.jetbrains.plugins.template.context.FileContext
-import org.jetbrains.plugins.template.editWindow.GradleTreeForm
 import java.beans.PropertyChangeListener
 import java.io.File
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.SwingUtilities
 
 
 class GradleTreeEditor(
@@ -35,12 +34,7 @@ class GradleTreeEditor(
     private lateinit var gradleTreeForm: GradleTreeForm
     private var dir: String = File(file.path).parent
     private val myUserDataHolder = UserDataHolderBase()
-
-    init {
-        SwingUtilities.invokeLater {
-            doInit()
-        }
-    }
+    private var inited: Boolean = false
 
     private fun doInit() {
         editor = createEditorComponent()
@@ -50,6 +44,8 @@ class GradleTreeEditor(
 
         document.addDocumentListener(DocumentChangeListener(gradleTreeForm))
         panel = createPanel()
+
+        inited = true
     }
 
     override fun <T : Any?> getUserData(key: Key<T>): T? {
@@ -64,7 +60,7 @@ class GradleTreeEditor(
     }
 
     override fun getComponent(): JComponent {
-        if (!::panel.isInitialized) {
+        if (!inited) {
             doInit()
         }
         return panel
@@ -82,7 +78,7 @@ class GradleTreeEditor(
 
     override fun getFile(): VirtualFile = file
     override fun isValid(): Boolean = true
-    override fun getName(): String = "Gradle Tree"
+    override fun getName(): String = "Dependency Analysis"
     override fun getState(level: FileEditorStateLevel): FileEditorState = FileEditorState.INSTANCE
     override fun setState(state: FileEditorState) {}
     override fun isModified(): Boolean = false
@@ -141,11 +137,4 @@ class GradleTreeEditor(
         }
     }
 
-    class DocumentChangeListener(private val gradleTreeForm: GradleTreeForm) : DocumentListener {
-
-        override fun documentChanged(event: com.intellij.openapi.editor.event.DocumentEvent) {
-            gradleTreeForm.markRefreshUIChanged()
-        }
-
-    }
 }

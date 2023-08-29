@@ -1,9 +1,9 @@
-package org.jetbrains.plugins.template.editWindow
+package com.tony.liu.plugins.gradle.tree.swing
 
 import com.intellij.ui.JBColor
 import org.apache.commons.lang3.StringUtils
-import org.jetbrains.plugins.template.context.FileContext
-import org.jetbrains.plugins.template.utils.NodeTextUtils
+import com.tony.liu.plugins.gradle.tree.context.FileContext
+import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
 import java.awt.Color
 import java.awt.Component
 import javax.swing.JTree

@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.template.context
+package com.tony.liu.plugins.gradle.tree.context
 
 import com.tony.support.GradleTreeParser
 import com.tony.support.model.TreeNode

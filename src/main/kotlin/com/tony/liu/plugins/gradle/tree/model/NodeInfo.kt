@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.template.model
+package com.tony.liu.plugins.gradle.tree.model
 
 data class NodeInfo(
     val deep: Int,

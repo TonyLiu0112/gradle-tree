@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.template.services
+package com.tony.liu.plugins.gradle.tree.services
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -11,7 +11,7 @@ import com.tony.support.model.TreeNode
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils.contains
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrMethodCall
-import org.jetbrains.plugins.template.context.FileContext
+import com.tony.liu.plugins.gradle.tree.context.FileContext
 import java.io.File
 
 

@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.template.editor
+package com.tony.liu.plugins.gradle.tree.editor
 
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditor

@@ -1,19 +1,17 @@
-package org.jetbrains.plugins.template.editWindow
+package com.tony.liu.plugins.gradle.tree.swing
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VirtualFile
+import com.tony.liu.plugins.gradle.tree.context.FileContext
+import com.tony.liu.plugins.gradle.tree.services.PsiGradleService
+import com.tony.liu.plugins.gradle.tree.static.SwingResource
+import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
+import com.tony.liu.plugins.gradle.tree.utils.ObjUtils
 import org.apache.commons.lang3.StringUtils.*
-import org.jetbrains.plugins.template.context.FileContext
-import org.jetbrains.plugins.template.services.PsiGradleService
-import org.jetbrains.plugins.template.utils.NodeTextUtils
-import org.jetbrains.plugins.template.utils.ObjUtils
 import java.awt.Component
 import java.awt.event.ActionEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.io.IOException
-import java.io.InputStream
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -29,7 +27,6 @@ class GradleTreeForm {
     var topPanel: JPanel? = null
     private var refreshUIBtn: JButton? = null
     private var moneyBtn: JButton? = null
-    private var waringIcon: ImageIcon? = null
 
     var secondPanel: JPanel? = null
     private var searchInput: JTextField? = null
@@ -54,7 +51,6 @@ class GradleTreeForm {
     private var virtualFile: VirtualFile? = null
 
     init {
-        waringIcon = createImageIcon("static/images/jinggao.png")
 
         leftTree!!.model = null
         rightTree!!.model = null
@@ -75,7 +71,7 @@ class GradleTreeForm {
     }
 
     fun markRefreshUIChanged() {
-        refreshUIBtn!!.icon = waringIcon
+        refreshUIBtn!!.icon = SwingResource.waringIcon
     }
 
     fun bindFilterSelected(listener: () -> Unit) {
@@ -328,24 +324,6 @@ class GradleTreeForm {
 
         if (parent.parent != null && isNotBlank(parent.parent.artifactId)) {
             createTreeView(childNode, parent.parent)
-        }
-    }
-
-    private fun createImageIcon(fileName: String): ImageIcon? {
-        return try {
-            val classLoader: ClassLoader = GradleTreeForm::class.java.getClassLoader()
-            val inputStream: InputStream? = classLoader.getResourceAsStream(fileName)
-            if (inputStream != null) {
-                val buffer: ByteArray = inputStream.readAllBytes()
-                val imageIcon = ImageIcon(buffer)
-                inputStream.close()
-                imageIcon
-            } else {
-                null
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
         }
     }
 

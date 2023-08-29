@@ -1,1 +1,1 @@
-rootProject.name = "Greet Tree"
+rootProject.name = "Gradle Tree"
