@@ -99,7 +99,7 @@ class GradleTreeEditor(
             forceRefreshLeftTree()
         }
 
-        gradleTreeForm.binSearchInputChangeEvent {
+        gradleTreeForm.bindSearchInputChangeEvent {
             refreshLeftTree()
         }
 

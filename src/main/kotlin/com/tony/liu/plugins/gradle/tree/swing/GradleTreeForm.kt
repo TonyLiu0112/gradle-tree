@@ -1,5 +1,8 @@
 package com.tony.liu.plugins.gradle.tree.swing
 
+import com.intellij.openapi.externalSystem.importing.ImportSpecBuilder
+import com.intellij.openapi.externalSystem.model.ProjectSystemId
+import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.tony.liu.plugins.gradle.tree.context.FileContext
@@ -25,6 +28,7 @@ class GradleTreeForm {
 
     var topPanel: JPanel? = null
     private var refreshUIBtn: JButton? = null
+    private var reimport: JButton? = null
     private var moneyBtn: JButton? = null
 
     var secondPanel: JPanel? = null
@@ -63,6 +67,7 @@ class GradleTreeForm {
 
         bindExpandBtnClick()
         bindCollapseBtnClick()
+        bindReimportBtnClick()
     }
 
     fun initFile(project: Project, virtualFile: VirtualFile) {
@@ -102,7 +107,15 @@ class GradleTreeForm {
         })
     }
 
-    fun binSearchInputChangeEvent(listener: () -> Unit) {
+    private fun bindReimportBtnClick() {
+        reimport!!.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent?) {
+                ExternalSystemUtil.refreshProjects(ImportSpecBuilder(project!!, ProjectSystemId("GRADLE")))
+            }
+        })
+    }
+
+    fun bindSearchInputChangeEvent(listener: () -> Unit) {
 
         searchInput!!.document.addDocumentListener(object : DocumentListener {
 
