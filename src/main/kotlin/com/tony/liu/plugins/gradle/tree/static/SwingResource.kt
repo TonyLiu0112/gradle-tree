@@ -9,6 +9,7 @@ class SwingResource {
 
     companion object {
         val waringIcon: ImageIcon? = createImageIcon("static/images/warning.png")
+        val giveCashIcon: ImageIcon? = createImageIcon("static/images/GiveCash.png")
 
         private fun createImageIcon(fileName: String): ImageIcon? {
             return try {

@@ -12,8 +12,10 @@ import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
 import com.tony.liu.plugins.gradle.tree.utils.ObjUtils
 import org.apache.commons.lang3.StringUtils.*
 import java.awt.Component
+import java.awt.Desktop
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.net.URI
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -65,9 +67,20 @@ class GradleTreeForm {
 
         expand!!.isSelected = true
 
+        moneyBtn!!.icon = SwingResource.giveCashIcon
+
         bindExpandBtnClick()
         bindCollapseBtnClick()
         bindReimportBtnClick()
+        bindDonateBtnClick()
+    }
+
+    private fun bindDonateBtnClick() {
+        moneyBtn!!.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent?) {
+                Desktop.getDesktop().browse(URI("https://github.com/TonyLiu0112/donate/wiki/Donate"));
+            }
+        })
     }
 
     fun initFile(project: Project, virtualFile: VirtualFile) {
