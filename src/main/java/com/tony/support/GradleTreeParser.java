@@ -52,7 +52,7 @@ public class GradleTreeParser {
         }
 
         String line = lines.get(currentOffset++);
-        if (StringUtils.contains(line, "No dependencies")) {
+        if (StringUtils.isBlank(line) || StringUtils.contains(line, "No dependencies")) {
             return null;
         }
         TreeNode cn = buildNodeByPn(line, pn);

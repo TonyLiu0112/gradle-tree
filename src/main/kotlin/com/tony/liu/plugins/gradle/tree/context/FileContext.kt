@@ -2,6 +2,7 @@ package com.tony.liu.plugins.gradle.tree.context
 
 import com.tony.support.GradleTreeParser
 import com.tony.support.model.TreeNode
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils.contains
 import org.apache.commons.lang3.StringUtils.isEmpty
 import org.gradle.tooling.internal.consumer.ConnectorServices
@@ -48,6 +49,16 @@ private val scopes: Array<String> = arrayOf(
 class FileContext {
 
     companion object NodeContext {
+
+        val newLineSymbol: String = createNewLineSymbol()
+
+        private fun createNewLineSymbol(): String {
+            if (System.getProperties().getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+                return "\r\n"
+            }  else {
+                return "\n"
+            }
+        }
 
         val FILE_CONTEXT_MAP = mutableMapOf<String, TreeContext>()
 
@@ -157,7 +168,7 @@ class FileContext {
 
             val result = String(outputStream.toByteArray())
 
-            val splitItem = result.split("\n")
+            val splitItem = result.split(newLineSymbol)
 
             var inFragement = false
             var fragments = mutableListOf<String>()
@@ -177,12 +188,13 @@ class FileContext {
                     } else {
                         fragments.add(line)
                     }
-                }
-
-                for (fragment in all_element) {
-                    if (line.startsWith(fragment)) {
-                        inFragement = true
-                        fragmentName = fragment
+                } else {
+                    for (fragment in all_element) {
+                        if (line.startsWith(fragment)) {
+                            inFragement = true
+                            fragmentName = fragment
+                            break
+                        }
                     }
                 }
             }
