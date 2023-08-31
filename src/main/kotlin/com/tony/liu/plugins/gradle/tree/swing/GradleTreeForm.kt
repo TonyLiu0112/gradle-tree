@@ -78,7 +78,7 @@ class GradleTreeForm {
     private fun bindDonateBtnClick() {
         moneyBtn!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
-                Desktop.getDesktop().browse(URI("https://github.com/TonyLiu0112/donate/wiki/Donate"));
+                Desktop.getDesktop().browse(URI("https://github.com/TonyLiu0112/donate"));
             }
         })
     }
