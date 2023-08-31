@@ -124,6 +124,7 @@ class GradleTreeForm {
         reimport!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
                 ExternalSystemUtil.refreshProjects(ImportSpecBuilder(project!!, ProjectSystemId("GRADLE")))
+                markRefreshUIChanged()
             }
         })
     }
