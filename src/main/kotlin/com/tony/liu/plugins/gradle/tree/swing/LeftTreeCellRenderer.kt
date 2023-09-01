@@ -17,12 +17,13 @@ private val purpleScope: Array<String> = arrayOf("[runtimeOnly]")
 private val yellowScope: Array<String> = arrayOf("[compileOnly]", "[developmentOnly]")
 
 private val transparent: Color = Color(0, 0, 0, 0)
+private val filterSelectColor: Color = Color(52, 116, 118)
 
 private data class ScopeColor(val color: Color, val scops: Array<String>)
 
 private val scopeColorList: Array<ScopeColor> =
     arrayOf(
-        ScopeColor(Color(30, 157, 30), greenScope),
+        ScopeColor(Color(114, 159, 123), greenScope),
         ScopeColor(Color(195, 170, 222), purpleScope),
         ScopeColor(Color(194, 190, 23), yellowScope)
     )
@@ -53,8 +54,8 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
             ))
         ) {
             setBackgroundSelectionColor(DefaultTreeCellRenderer().backgroundSelectionColor)
-            setBackgroundNonSelectionColor(JBColor.CYAN)
-            setBackground(JBColor.CYAN)
+            setBackgroundNonSelectionColor(filterSelectColor)
+            setBackground(filterSelectColor)
             setForeground(getTextSelectionColor());
         } else {
             val defaultTreeCellRenderer = DefaultTreeCellRenderer()
