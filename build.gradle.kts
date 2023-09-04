@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
-    id("org.openjfx.javafxplugin") version "0.0.14"
 }
 
 group = properties("pluginGroup").get()
@@ -21,11 +20,6 @@ version = properties("pluginVersion").get()
 // Configure project's dependencies
 repositories {
     mavenCentral()
-}
-
-javafx {
-    version = "17"
-    modules("javafx.controls", "javafx.fxml", "javafx.swing")
 }
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
