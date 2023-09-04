@@ -50,29 +50,29 @@ class FileContext {
 
     companion object NodeContext {
 
-        val newLineSymbol: String = createNewLineSymbol()
-
-        private fun createNewLineSymbol(): String {
-            if (System.getProperties().getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-                return "\r\n"
-            }  else {
-                return "\n"
-            }
-        }
+//        val newLineSymbol: String = createNewLineSymbol()
+//
+//        private fun createNewLineSymbol(): String {
+//            if (System.getProperties().getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+//                return "\r\n"
+//            }  else {
+//                return "\n"
+//            }
+//        }
 
         val FILE_CONTEXT_MAP = mutableMapOf<String, TreeContext>()
 
-        fun init(filePath: String) {
+        fun init(filePath: String, lineSeparator: String) {
             if (FILE_CONTEXT_MAP[filePath] != null) {
                 return
             }
 
-            refresh(filePath)
+            refresh(filePath, lineSeparator)
         }
 
-        fun refresh(filePath: String) {
+        fun refresh(filePath: String, lineSeparator: String) {
             val treeContext = TreeContext()
-            execGradleCommand(filePath, treeContext)
+            execGradleCommand(filePath, treeContext, lineSeparator)
 
             val virtualRoot = DefaultMutableTreeNode("virtualRoot")
 
@@ -154,7 +154,7 @@ class FileContext {
             return " (omitted with: " + node.version + ")"
         }
 
-        private fun execGradleCommand(filePath: String, treeContext: TreeContext) {
+        private fun execGradleCommand(filePath: String, treeContext: TreeContext, lineSeparator: String) {
             val connection = ConnectorServices.createConnector().forProjectDirectory(File(filePath)).connect()
 
             val build = connection.newBuild()
@@ -168,7 +168,7 @@ class FileContext {
 
             val result = String(outputStream.toByteArray())
 
-            val splitItem = result.split(newLineSymbol)
+            val splitItem = result.split(lineSeparator)
 
             var inFragement = false
             var fragments = mutableListOf<String>()

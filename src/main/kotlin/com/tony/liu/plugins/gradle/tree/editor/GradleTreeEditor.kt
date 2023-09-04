@@ -4,6 +4,8 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.editor.impl.DocumentImpl
+import com.intellij.openapi.editor.impl.event.EditorEventMulticasterImpl
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.FileEditorStateLevel
@@ -85,7 +87,8 @@ class GradleTreeEditor(
 
     private fun createEditorComponent(): Editor {
         val editorFactory: EditorFactory = EditorFactory.getInstance()
-        val document: Document = editorFactory.createDocument(String(file.contentsToByteArray()))
+        val document = DocumentImpl(String(file.contentsToByteArray()), true, false)
+        (editorFactory.eventMulticaster as EditorEventMulticasterImpl).registerDocument(document)
         return editorFactory.createEditor(document, project) as EditorEx
     }
 
@@ -122,14 +125,14 @@ class GradleTreeEditor(
     }
 
     private fun forceRefreshLeftTree() {
-        FileContext.refresh(dir)
+        FileContext.refresh(dir, file.detectedLineSeparator!!)
         initTreeData()
     }
 
     private fun initTreeData() {
         val treeContext = FileContext.FILE_CONTEXT_MAP[dir]
         if (treeContext?.TREE_VIEW == null) {
-            FileContext.init(dir)
+            FileContext.init(dir, file.detectedLineSeparator!!)
         }
         val leftTreeNode = FileContext.FILE_CONTEXT_MAP[dir]!!.TREE_VIEW
         if (leftTreeNode != null) {

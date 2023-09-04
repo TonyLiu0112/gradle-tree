@@ -55,7 +55,7 @@ class PsiGradleService {
 
             var newLine = line
 
-            if (contains(newLine, groupArtifact)) {
+            if (contains(newLine, groupArtifact) && contains(newLine, rootMetadata.scope)) {
                 if (fileType == 0) {
                     // groovy format
                     newLine += " exclude(group: '" + selectMetadata.groupId + "', module: '" + selectMetadata.artifactId + "')"
@@ -141,7 +141,7 @@ class PsiGradleService {
                 groupArtifact.split(":")[1].trim()
             }
         val treeNode = FileContext.FILE_CONTEXT_MAP[fileDir]!!.TREE_METADATA[artifactId]
-        return Metadata(treeNode!!.groupId, treeNode.artifactId)
+        return Metadata(treeNode!!.groupId, treeNode.artifactId, treeNode.scope)
     }
 
     private fun getRootNode(treeNode: DefaultMutableTreeNode): DefaultMutableTreeNode {
@@ -154,7 +154,8 @@ class PsiGradleService {
 
     private data class Metadata(
         val groupId: String,
-        val artifactId: String
+        val artifactId: String,
+        val scope: String
     )
 
     private data class LineMeta(val str: String, val skipLines: List<Int>)
