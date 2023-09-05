@@ -101,6 +101,7 @@ class GradleTreeEditor(
         gradleTreeForm.bindRefreshBtnClick {
             GlobalScope.launch {
                 forceRefreshLeftTree()
+                gradleTreeForm.enableRefreshBtn()
             }
         }
 

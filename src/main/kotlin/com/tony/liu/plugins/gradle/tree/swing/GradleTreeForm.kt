@@ -112,12 +112,24 @@ class GradleTreeForm {
     fun bindRefreshBtnClick(listener: () -> Unit) {
         refreshUIBtn!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
+                if (!refreshUIBtn!!.isEnabled) {
+                    return
+                }
+
                 leftTree!!.model = null
                 rightTree!!.model = null
-                listener.invoke()
+
+                refreshUIBtn!!.isEnabled = false
                 refreshUIBtn!!.icon = null
+                refreshUIBtn!!.text = "Refreshing..."
+                listener.invoke()
             }
         })
+    }
+
+    fun enableRefreshBtn() {
+        refreshUIBtn!!.isEnabled = true
+        refreshUIBtn!!.text = "Refresh UI"
     }
 
     private fun bindReimportBtnClick() {
