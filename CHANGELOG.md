@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [1.0.2] - 2023-09-05
+
+### Changed
+
+- fix open editor error on `Line Separator CRLF mode`.
+- fix exclude dependency error.
+
 ## [1.0.2] - 2023-09-04
 
 ### Changed

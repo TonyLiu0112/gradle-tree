@@ -160,7 +160,7 @@ class FileContext {
 
             val result = String(outputStream.toByteArray())
 
-            val splitItem = result.split(lineSeparator)
+            val splitItem = result.split("\n")
 
             var inFragement = false
             var fragments = mutableListOf<String>()
