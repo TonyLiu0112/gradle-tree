@@ -380,7 +380,8 @@ class GradleTreeForm {
                 if (selectedNode != null) {
                     val nodeText = (selectedNode as DefaultMutableTreeNode).userObject.toString()
                     val artifactId = NodeTextUtils.getArtifactId(nodeText)
-                    val nodes = FileContext.FILE_CONTEXT_MAP[dir]!!.ARTIFACT_NODES_MAP.get(artifactId)
+                    val scope = NodeTextUtils.getScope(nodeText)
+                    val nodes = FileContext.FILE_CONTEXT_MAP[dir]!!.ARTIFACT_NODES_MAP.get("$artifactId-$scope")
                     if (nodes.size > 0) {
                         uiForm.flushRightTree(nodes)
                     }

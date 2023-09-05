@@ -2,7 +2,6 @@ package com.tony.liu.plugins.gradle.tree.context
 
 import com.tony.support.GradleTreeParser
 import com.tony.support.model.TreeNode
-import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils.contains
 import org.apache.commons.lang3.StringUtils.isEmpty
 import org.gradle.tooling.internal.consumer.ConnectorServices
@@ -50,16 +49,6 @@ class FileContext {
 
     companion object NodeContext {
 
-//        val newLineSymbol: String = createNewLineSymbol()
-//
-//        private fun createNewLineSymbol(): String {
-//            if (System.getProperties().getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-//                return "\r\n"
-//            }  else {
-//                return "\n"
-//            }
-//        }
-
         val FILE_CONTEXT_MAP = mutableMapOf<String, TreeContext>()
 
         fun init(filePath: String, lineSeparator: String) {
@@ -105,10 +94,13 @@ class FileContext {
                         node
                     )
                 )
-                treeContext.ARTIFACT_TEXT_MAP[node.artifactId] = node.groupId + " : " + node.artifactId
-                treeContext.ARTIFACT_NODES_MAP.put(node.artifactId, node)
-                treeContext.TREE_METADATA[node.artifactId] = node
+
+                treeContext.ARTIFACT_TEXT_MAP[node.artifactId + "-" + node.scope] = node.groupId + " : " + node.artifactId
+                treeContext.ARTIFACT_NODES_MAP.put(node.artifactId + "-" + node.scope, node)
+                treeContext.TREE_METADATA[node.artifactId + "-" + node.scope] = node
+
                 rootNode.add(treeNode)
+
                 for (child in node.children) {
                     child.scope = scope
                     createTreeView(treeContext, child, treeNode, scope)

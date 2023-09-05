@@ -13,6 +13,10 @@ class NodeTextUtils {
                 nodeText.split(" : ")[0]
             }
         }
+
+        fun getScope(nodeText: String): String {
+            return StringUtils.substringBetween(nodeText, "[", "]").trim()
+        }
     }
 
 }

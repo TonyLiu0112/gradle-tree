@@ -45,10 +45,15 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
         val node = value as DefaultMutableTreeNode
         val nodeText = node.toString()
 
+        if (nodeText == "virtualRoot") {
+            return this
+        }
+
         val cleanScopeNodeText = cleanScope(nodeText)
 
         if (StringUtils.isNotBlank(searchKey)
             && (StringUtils.contains(cleanScopeNodeText, searchKey) || groupContainsKeyword(
+                nodeText,
                 cleanScopeNodeText,
                 searchKey
             ))
@@ -86,9 +91,10 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
         return false
     }
 
-    private fun groupContainsKeyword(nodeText: String, searchKey: String): Boolean {
-        val artifactId = NodeTextUtils.getArtifactId(nodeText)
-        val fullText = FileContext.FILE_CONTEXT_MAP[dir]!!.ARTIFACT_TEXT_MAP.getOrDefault(artifactId, "")
+    private fun groupContainsKeyword(nodeText: String, cleanScopeNodeText: String, searchKey: String): Boolean {
+        val artifactId = NodeTextUtils.getArtifactId(cleanScopeNodeText)
+        val scope = NodeTextUtils.getScope(nodeText)
+        val fullText = FileContext.FILE_CONTEXT_MAP[dir]!!.ARTIFACT_TEXT_MAP.getOrDefault("$artifactId-$scope", "")
         return StringUtils.contains(fullText, searchKey)
     }
 

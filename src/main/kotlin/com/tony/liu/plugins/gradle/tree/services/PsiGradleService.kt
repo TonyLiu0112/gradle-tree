@@ -34,15 +34,15 @@ class PsiGradleService {
         val rootNode = getRootNode(selectNode)
 
         val fileDir = File(virtualFile.path).parent
-        val selectMetadata = getNodeArtifactId(selectNode, fileDir)
-        val rootMetadata = getNodeArtifactId(rootNode, fileDir)
+        val selectMetadata = getNodeMetadata(selectNode, fileDir)
+        val rootMetadata = getNodeMetadata(rootNode, fileDir)
 
         val text = virtualFile.findDocument()!!.text
 
         val lines = text.split("\n")
 
         var newText = ""
-        val groupArtifact = rootMetadata.groupId + ":" + rootMetadata.artifactId
+        val rootGroupArtifact = rootMetadata.groupId + ":" + rootMetadata.artifactId
         var changed = false
         val skipLines: ArrayList<Int> = arrayListOf()
 
@@ -55,7 +55,7 @@ class PsiGradleService {
 
             var newLine = line
 
-            if (contains(newLine, groupArtifact) && contains(newLine, rootMetadata.scope)) {
+            if (currentLineIsRoot(newLine, rootGroupArtifact, rootMetadata)) {
                 if (fileType == 0) {
                     // groovy format
                     newLine += " exclude(group: '" + selectMetadata.groupId + "', module: '" + selectMetadata.artifactId + "')"
@@ -82,6 +82,29 @@ class PsiGradleService {
         }
 
         return changed
+    }
+
+    private fun currentLineIsRoot(
+        newLine: String,
+        rootGroupArtifact: String,
+        rootMetadata: Metadata
+    ): Boolean {
+        if (!contains(newLine, rootMetadata.scope)) {
+            return false
+        }
+
+        val trimStr = StringUtils.substringBefore(newLine, "exclude").trim()
+
+        var coordinate = StringUtils.substringBetween(trimStr, "'", "'")
+
+        if (coordinate == null || coordinate == "") {
+            coordinate = StringUtils.substringBetween(trimStr, "\"", "\"")
+        }
+
+        if (StringUtils.countMatches(coordinate, ":") > 1) {
+            coordinate = StringUtils.substringBeforeLast(coordinate, ":")
+        }
+        return StringUtils.equalsIgnoreCase(coordinate, rootGroupArtifact)
     }
 
     private fun getKtsExcludeBlock(lines: List<String>, lineNum: Int, selectMetadata: Metadata): LineMeta {
@@ -132,7 +155,8 @@ class PsiGradleService {
         return LineMeta(exists, skipLines)
     }
 
-    private fun getNodeArtifactId(node: DefaultMutableTreeNode, fileDir: String): Metadata {
+    private fun getNodeMetadata(node: DefaultMutableTreeNode, fileDir: String): Metadata {
+        val scope = StringUtils.substringBetween(node.userObject.toString(), "[", "]").trim()
         val groupArtifact = StringUtils.substringBefore(node.userObject.toString(), " [").trim()
         val artifactId: String =
             if (StringUtils.countMatches(groupArtifact, ":") == 1) {
@@ -140,7 +164,7 @@ class PsiGradleService {
             } else {
                 groupArtifact.split(":")[1].trim()
             }
-        val treeNode = FileContext.FILE_CONTEXT_MAP[fileDir]!!.TREE_METADATA[artifactId]
+        val treeNode = FileContext.FILE_CONTEXT_MAP[fileDir]!!.TREE_METADATA["$artifactId-$scope"]
         return Metadata(treeNode!!.groupId, treeNode.artifactId, treeNode.scope)
     }
 
