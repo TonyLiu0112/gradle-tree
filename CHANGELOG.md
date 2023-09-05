@@ -4,7 +4,11 @@
 
 ## [Unreleased]
 
-## [1.0.2] - 2023-09-05
+## [1.0.3] - 2023-09-05
+
+### Added
+
+- Refresh UI animation
 
 ### Changed
 
