@@ -146,6 +146,14 @@ class FileContext {
             return " (omitted with: " + node.version + ")"
         }
 
+        private fun createNewLineSymbol(): String {
+            if (System.getProperties().getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+                return "\r\n"
+            } else {
+                return "\n"
+            }
+        }
+
         private fun execGradleCommand(filePath: String, treeContext: TreeContext, lineSeparator: String) {
             val connection = ConnectorServices.createConnector().forProjectDirectory(File(filePath)).connect()
 
@@ -160,7 +168,7 @@ class FileContext {
 
             val result = String(outputStream.toByteArray())
 
-            val splitItem = result.split("\n")
+            val splitItem = result.split(createNewLineSymbol())
 
             var inFragement = false
             var fragments = mutableListOf<String>()
