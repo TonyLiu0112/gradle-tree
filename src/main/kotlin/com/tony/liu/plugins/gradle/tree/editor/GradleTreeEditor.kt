@@ -99,7 +99,9 @@ class GradleTreeEditor(
         }
 
         gradleTreeForm.bindRefreshBtnClick {
-            forceRefreshLeftTree()
+            GlobalScope.launch {
+                forceRefreshLeftTree()
+            }
         }
 
         gradleTreeForm.bindSearchInputChangeEvent {

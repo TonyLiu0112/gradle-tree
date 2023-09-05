@@ -39,7 +39,11 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
         row: Int,
         hasFocus: Boolean
     ): Component {
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus)
+        try {
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus)
+        } catch (_: Exception) {
+
+        }
         icon = null
 
         val node = value as DefaultMutableTreeNode
