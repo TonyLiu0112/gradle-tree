@@ -1,9 +1,9 @@
 package com.tony.liu.plugins.gradle.tree.swing
 
 import com.intellij.ui.JBColor
-import org.apache.commons.lang3.StringUtils
 import com.tony.liu.plugins.gradle.tree.context.FileContext
 import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
+import org.apache.commons.lang3.StringUtils
 import java.awt.Color
 import java.awt.Component
 import javax.swing.JTree
@@ -65,13 +65,15 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
             setBackgroundSelectionColor(DefaultTreeCellRenderer().backgroundSelectionColor)
             setBackgroundNonSelectionColor(filterSelectColor)
             setBackground(filterSelectColor)
-            setForeground(getTextSelectionColor());
+            setForeground(getTextSelectionColor())
+            setBorderSelectionColor(null)
         } else {
             val defaultTreeCellRenderer = DefaultTreeCellRenderer()
             setBackgroundSelectionColor(defaultTreeCellRenderer.backgroundSelectionColor)
-            setForeground(getTextSelectionColor());
             setBackgroundNonSelectionColor(transparent)
             setBackground(transparent)
+            setForeground(getTextSelectionColor())
+            setBorderSelectionColor(null)
         }
 
         if (setForegroundByScope(nodeText)) {
