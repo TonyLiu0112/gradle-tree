@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [1.0.4] - 2023-09-09
+
+### Changed
+
+- Remove the border of the selected node
+
 ## [1.0.3] - 2023-09-05
 
 ### Added
