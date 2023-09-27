@@ -12,5 +12,16 @@
     <extensions defaultExtensionNs="com.intellij">
         <fileEditorProvider implementation="com.tony.liu.plugins.gradle.tree.editor.GradleTreeEditorProvider"/>
     </extensions>
-    
+
+<!--    <application-components>-->
+<!--        <component>-->
+<!--            <implementation-class>com.tony.liu.plugins.gradle.tree.listeners.PreLoadListener</implementation-class>-->
+<!--        </component>-->
+<!--    </application-components>-->
+
+<!--    <projectListeners>-->
+<!--        <listener class="com.tony.liu.plugins.gradle.tree.listeners.PreLoadListener"-->
+<!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
+<!--    </projectListeners>-->
+
 </idea-plugin>

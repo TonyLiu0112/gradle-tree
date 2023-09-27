@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils.isEmpty
 import org.gradle.tooling.internal.consumer.ConnectorServices
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.tree.DefaultMutableTreeNode
 
 private const val startTag: String = "+---"
@@ -50,13 +51,21 @@ class FileContext {
     companion object NodeContext {
 
         val FILE_CONTEXT_MAP = mutableMapOf<String, TreeContext>()
+        private val IS_RUNNING = AtomicBoolean(false)
 
         fun init(filePath: String, lineSeparator: String) {
-            if (FILE_CONTEXT_MAP[filePath] != null) {
+            if (!IS_RUNNING.compareAndSet(false, true)) {
                 return
             }
+            try {
+                if (FILE_CONTEXT_MAP[filePath] != null) {
+                    return
+                }
 
-            refresh(filePath, lineSeparator)
+                refresh(filePath, lineSeparator)
+            } finally {
+                IS_RUNNING.set(false)
+            }
         }
 
         fun refresh(filePath: String, lineSeparator: String) {
@@ -95,7 +104,8 @@ class FileContext {
                     )
                 )
 
-                treeContext.ARTIFACT_TEXT_MAP[node.artifactId + "-" + node.scope] = node.groupId + " : " + node.artifactId
+                treeContext.ARTIFACT_TEXT_MAP[node.artifactId + "-" + node.scope] =
+                    node.groupId + " : " + node.artifactId
                 treeContext.ARTIFACT_NODES_MAP.put(node.artifactId + "-" + node.scope, node)
                 treeContext.TREE_METADATA[node.artifactId + "-" + node.scope] = node
 
