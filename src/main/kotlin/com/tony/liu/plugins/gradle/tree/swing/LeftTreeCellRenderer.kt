@@ -1,6 +1,7 @@
 package com.tony.liu.plugins.gradle.tree.swing
 
 import com.intellij.ui.JBColor
+import com.intellij.util.ui.UIUtil.isUnderDarcula
 import com.tony.liu.plugins.gradle.tree.context.FileContext
 import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
 import org.apache.commons.lang3.StringUtils
@@ -10,20 +11,29 @@ import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeCellRenderer
 
+
 private const val OMITTED = "omitted with"
 
 private val greenScope: Array<String> = arrayOf("[testCompileOnly]", "[testImplementation]", "[testRuntimeOnly]")
 private val purpleScope: Array<String> = arrayOf("[runtimeOnly]")
 private val yellowScope: Array<String> = arrayOf("[compileOnly]", "[developmentOnly]")
 
-private val transparent: Color = Color(0, 0, 0, 0)
-private val filterSelectColor: Color = Color(52, 116, 118)
-
 private data class ScopeColor(val color: Color, val scops: Array<String>)
 
-private val scopeColorList: Array<ScopeColor> =
+private val transparent: Color = Color(0, 0, 0, 0)
+private val filterSelectColor_Dark: Color = Color(52, 116, 118)
+private val filterSelectColor_Light: Color = Color(148, 250, 254)
+
+private val scopeColorList_Dark: Array<ScopeColor> =
     arrayOf(
         ScopeColor(Color(114, 159, 123), greenScope),
+        ScopeColor(Color(195, 170, 222), purpleScope),
+        ScopeColor(Color(194, 190, 23), yellowScope)
+    )
+
+private val scopeColorList_Light: Array<ScopeColor> =
+    arrayOf(
+        ScopeColor(Color(49, 109, 25), greenScope),
         ScopeColor(Color(195, 170, 222), purpleScope),
         ScopeColor(Color(194, 190, 23), yellowScope)
     )
@@ -63,16 +73,27 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
             ))
         ) {
             setBackgroundSelectionColor(DefaultTreeCellRenderer().backgroundSelectionColor)
-            setBackgroundNonSelectionColor(filterSelectColor)
-            setBackground(filterSelectColor)
-            setForeground(getTextSelectionColor())
-            setBorderSelectionColor(null)
+
+            if (isUnderDarcula()) {
+                setBackgroundNonSelectionColor(filterSelectColor_Dark)
+                setBackground(filterSelectColor_Dark)
+            } else {
+                setBackgroundNonSelectionColor(filterSelectColor_Light)
+                setBackground(filterSelectColor_Light)
+            }
+
         } else {
             val defaultTreeCellRenderer = DefaultTreeCellRenderer()
             setBackgroundSelectionColor(defaultTreeCellRenderer.backgroundSelectionColor)
             setBackgroundNonSelectionColor(transparent)
             setBackground(transparent)
-            setForeground(getTextSelectionColor())
+        }
+
+        if (isUnderDarcula()) {
+            setForeground(foreground)
+            setBorderSelectionColor(null)
+        } else {
+            setForeground(foreground)
             setBorderSelectionColor(null)
         }
 
@@ -86,7 +107,9 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
     }
 
     private fun setForegroundByScope(nodeText: String): Boolean {
-        for (scopeColor in scopeColorList) {
+        val scopeColors = if (isUnderDarcula()) scopeColorList_Dark else scopeColorList_Light
+
+        for (scopeColor in scopeColors) {
             for (scope in scopeColor.scops) {
                 if (StringUtils.contains(nodeText, scope)) {
                     setForeground(scopeColor.color)

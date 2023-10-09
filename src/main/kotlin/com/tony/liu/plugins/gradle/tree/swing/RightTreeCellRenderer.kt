@@ -24,6 +24,7 @@ class RightTreeCellRenderer : DefaultTreeCellRenderer() {
         setBackgroundNonSelectionColor(transparent)
         setBackground(transparent)
         setBackgroundSelectionColor(transparent)
+        setBorderSelectionColor(null)
 
         if (StringUtils.contains(nodeText, "omitted")) {
             setForeground(Color.red)
