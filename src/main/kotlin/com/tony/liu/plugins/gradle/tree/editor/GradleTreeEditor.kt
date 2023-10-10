@@ -95,7 +95,10 @@ class GradleTreeEditor(
     @OptIn(DelicateCoroutinesApi::class)
     private fun createPanel(): JPanel {
         GlobalScope.launch {
+            gradleTreeForm.disableRefreshBtn()
+            gradleTreeForm.leftTreeShowLoading()
             initTreeData()
+            gradleTreeForm.enableRefreshBtn()
         }
 
         gradleTreeForm.bindRefreshBtnClick {

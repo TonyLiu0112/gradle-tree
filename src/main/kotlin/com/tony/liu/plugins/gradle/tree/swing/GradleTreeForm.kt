@@ -75,6 +75,10 @@ class GradleTreeForm {
         bindDonateBtnClick()
     }
 
+    fun clickRefreshBtn() {
+        refreshUIBtn!!.doClick()
+    }
+
     private fun bindDonateBtnClick() {
         moneyBtn!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
@@ -112,6 +116,7 @@ class GradleTreeForm {
     fun bindRefreshBtnClick(listener: () -> Unit) {
         refreshUIBtn!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
+                println("点击了...")
                 if (!refreshUIBtn!!.isEnabled) {
                     return
                 }
@@ -119,9 +124,9 @@ class GradleTreeForm {
                 leftTree!!.model = null
                 rightTree!!.model = null
 
-                refreshUIBtn!!.isEnabled = false
                 refreshUIBtn!!.icon = null
-                refreshUIBtn!!.text = "Refreshing..."
+                disableRefreshBtn()
+                leftTreeShowLoading()
                 listener.invoke()
             }
         })
@@ -130,6 +135,11 @@ class GradleTreeForm {
     fun enableRefreshBtn() {
         refreshUIBtn!!.isEnabled = true
         refreshUIBtn!!.text = "Refresh UI"
+    }
+
+    fun disableRefreshBtn() {
+        refreshUIBtn!!.isEnabled = false
+        refreshUIBtn!!.text = "Refreshing..."
     }
 
     private fun bindReimportBtnClick() {
@@ -190,7 +200,23 @@ class GradleTreeForm {
         })
     }
 
+    fun leftTreeShowLoading() {
+        leftTree!!.model = null
+        rightTree!!.model = null
+
+        val root = DefaultMutableTreeNode("Loading...")
+        val loadingNode = DefaultMutableTreeNode("Loading, Please wait......")
+        root.add(loadingNode)
+
+        leftTree!!.cellRenderer = TreeLoadingCellRenderer()
+        leftTree!!.setRootVisible(false)
+        leftTree!!.setModel(DefaultTreeModel(root))
+    }
+
     fun flushLeftTree(dir: String, virtualRoot: DefaultMutableTreeNode) {
+        leftTree!!.model = null
+        rightTree!!.model = null
+
         leftTree!!.cellRenderer = LeftTreeCellRenderer(searchInput!!.text, dir)
 
         var rootNode = ObjUtils.deepCopy(virtualRoot) as DefaultMutableTreeNode

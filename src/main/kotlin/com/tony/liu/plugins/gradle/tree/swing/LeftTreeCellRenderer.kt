@@ -100,16 +100,16 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
             setBorderSelectionColor(null)
         }
 
+        // 焦点渲染
+        if (sel && !hasFocus) {
+            backgroundSelectionColor = null
+        }
+
         // 编译范围渲染
         if (setForegroundByScope(nodeText)) {
             return this
         } else if (StringUtils.contains(nodeText, OMITTED)) {
             setForeground(JBColor.RED)
-        }
-
-        // 焦点渲染
-        if (sel && !hasFocus) {
-            backgroundSelectionColor = null
         }
 
         return this

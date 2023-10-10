@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [1.0.6] - 2023-10-10
+
+### Changed
+
+- Optimize selected focus style
+- Support transition animation for loading data
+
 ## [1.0.5] - 2023-10-09
 
 ### Changed
