@@ -72,6 +72,7 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
                 searchKey
             ))
         ) {
+            // 搜索渲染
             setBackgroundSelectionColor(DefaultTreeCellRenderer().backgroundSelectionColor)
 
             if (isUnderDarcula()) {
@@ -83,12 +84,14 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
             }
 
         } else {
+            // 普通渲染
             val defaultTreeCellRenderer = DefaultTreeCellRenderer()
             setBackgroundSelectionColor(defaultTreeCellRenderer.backgroundSelectionColor)
             setBackgroundNonSelectionColor(transparent)
             setBackground(transparent)
         }
 
+        // 主题色渲染
         if (isUnderDarcula()) {
             setForeground(foreground)
             setBorderSelectionColor(null)
@@ -97,10 +100,16 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
             setBorderSelectionColor(null)
         }
 
+        // 编译范围渲染
         if (setForegroundByScope(nodeText)) {
             return this
         } else if (StringUtils.contains(nodeText, OMITTED)) {
             setForeground(JBColor.RED)
+        }
+
+        // 焦点渲染
+        if (sel && !hasFocus) {
+            backgroundSelectionColor = null
         }
 
         return this
