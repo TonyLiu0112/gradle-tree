@@ -1,6 +1,7 @@
 package com.tony.liu.plugins.gradle.tree.swing
 
 import com.intellij.ui.JBColor
+import com.intellij.util.ui.StartupUiUtil.isUnderDarcula
 import com.intellij.util.ui.UIUtil.isUnderDarcula
 import com.tony.liu.plugins.gradle.tree.context.FileContext
 import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
@@ -92,7 +93,7 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
         }
 
         // 主题色渲染
-        if (isUnderDarcula()) {
+        if (isUnderDarcula) {
             setForeground(foreground)
             setBorderSelectionColor(null)
         } else {
@@ -116,7 +117,7 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
     }
 
     private fun setForegroundByScope(nodeText: String): Boolean {
-        val scopeColors = if (isUnderDarcula()) scopeColorList_Dark else scopeColorList_Light
+        val scopeColors = if (isUnderDarcula) scopeColorList_Dark else scopeColorList_Light
 
         for (scopeColor in scopeColors) {
             for (scope in scopeColor.scops) {
