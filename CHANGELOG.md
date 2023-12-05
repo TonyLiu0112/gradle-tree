@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [1.0.7] - 2023-12-05
+
+### Changed
+
+- support idea new version 2023.3
+
 ## [1.0.6] - 2023-10-10
 
 ### Changed

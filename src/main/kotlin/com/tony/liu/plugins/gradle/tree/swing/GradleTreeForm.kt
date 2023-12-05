@@ -116,7 +116,6 @@ class GradleTreeForm {
     fun bindRefreshBtnClick(listener: () -> Unit) {
         refreshUIBtn!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
-                println("点击了...")
                 if (!refreshUIBtn!!.isEnabled) {
                     return
                 }
