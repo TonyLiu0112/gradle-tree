@@ -120,6 +120,10 @@ class GradleTreeEditor(
             refreshLeftTree()
         }
 
+        gradleTreeForm.bindShowAsListClick {
+            refreshLeftTree()
+        }
+
         return gradleTreeForm.basePanel!!
     }
 
@@ -127,6 +131,13 @@ class GradleTreeEditor(
         val leftTreeNode = FileContext.FILE_CONTEXT_MAP[dir]!!.TREE_VIEW
         if (leftTreeNode != null) {
             gradleTreeForm.flushLeftTree(dir, leftTreeNode)
+        }
+    }
+
+    private fun refreshLeftTreeAsList() {
+        val leftTreeNode = FileContext.FILE_CONTEXT_MAP[dir]!!.TREE_VIEW
+        if (leftTreeNode != null) {
+            gradleTreeForm.flushLeftTreeAsList(dir, leftTreeNode)
         }
     }
 
