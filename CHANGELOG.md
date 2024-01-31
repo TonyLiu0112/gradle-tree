@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [1.0.8] - 2024-01-30
+
+### Changed
+
+- remove deprecated API
+- add List View
+
 ## [1.0.7] - 2023-12-05
 
 ### Changed

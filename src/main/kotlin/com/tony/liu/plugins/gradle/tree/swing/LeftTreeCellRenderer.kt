@@ -1,8 +1,6 @@
 package com.tony.liu.plugins.gradle.tree.swing
 
 import com.intellij.ui.JBColor
-import com.intellij.util.ui.StartupUiUtil.isUnderDarcula
-import com.intellij.util.ui.UIUtil.isUnderDarcula
 import com.tony.liu.plugins.gradle.tree.context.FileContext
 import com.tony.liu.plugins.gradle.tree.utils.NodeTextUtils
 import org.apache.commons.lang3.StringUtils
@@ -53,7 +51,7 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
         try {
             super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus)
         } catch (_: Exception) {
-
+            // nothing to do.
         }
         icon = null
 
@@ -76,7 +74,7 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
             // 搜索渲染
             setBackgroundSelectionColor(DefaultTreeCellRenderer().backgroundSelectionColor)
 
-            if (isUnderDarcula()) {
+            if (!JBColor.isBright()) {
                 setBackgroundNonSelectionColor(filterSelectColor_Dark)
                 setBackground(filterSelectColor_Dark)
             } else {
@@ -93,13 +91,8 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
         }
 
         // 主题色渲染
-        if (isUnderDarcula) {
-            setForeground(foreground)
-            setBorderSelectionColor(null)
-        } else {
-            setForeground(foreground)
-            setBorderSelectionColor(null)
-        }
+        setForeground(foreground)
+        setBorderSelectionColor(null)
 
         // 焦点渲染
         if (sel && !hasFocus) {
@@ -117,7 +110,7 @@ class LeftTreeCellRenderer(private val searchKey: String, private val dir: Strin
     }
 
     private fun setForegroundByScope(nodeText: String): Boolean {
-        val scopeColors = if (isUnderDarcula) scopeColorList_Dark else scopeColorList_Light
+        val scopeColors = if (!JBColor.isBright()) scopeColorList_Dark else scopeColorList_Light
 
         for (scopeColor in scopeColors) {
             for (scope in scopeColor.scops) {

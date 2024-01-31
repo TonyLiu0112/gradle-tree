@@ -16,6 +16,7 @@ import java.awt.Desktop
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.net.URI
+import java.util.*
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -39,6 +40,7 @@ class GradleTreeForm {
 
     var thirdPanel: JPanel? = null
     private var radioGroup: ButtonGroup? = null
+    var showAsList: JCheckBox? = null
     private var showGroupCheckBox: JCheckBox? = null
     private var expand: JRadioButton? = null
     private var collapse: JRadioButton? = null
@@ -169,6 +171,19 @@ class GradleTreeForm {
         })
     }
 
+    fun bindShowAsListClick(listener: () -> Unit) {
+        showAsList!!.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent?) {
+                if (showAsList!!.isSelected) {
+                    filter!!.isVisible = false
+                } else {
+                    filter!!.isVisible = true
+                }
+                listener.invoke()
+            }
+        })
+    }
+
     fun bindShowGroupClick(listener: () -> Unit) {
         showGroupCheckBox!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
@@ -212,7 +227,51 @@ class GradleTreeForm {
         leftTree!!.setModel(DefaultTreeModel(root))
     }
 
+    fun flushLeftTreeAsList(dir: String, virtualRoot: DefaultMutableTreeNode) {
+        leftTree!!.model = null
+        rightTree!!.model = null
+        leftTree!!.cellRenderer = RightTreeCellRenderer()
+
+        val rootNode = ObjUtils.deepCopy(virtualRoot) as DefaultMutableTreeNode
+
+        // 排序
+        val nodeSet = convert2Set(TreePath(rootNode))
+
+        val newVRoot = DefaultMutableTreeNode("virtualRoot")
+        if (nodeSet.isNotEmpty()) {
+            nodeSet.forEach { text ->
+                val searchKey = searchInput!!.text
+                if (isNotBlank(searchKey)) {
+                    if (text.contains(searchKey)) {
+                        val node = DefaultMutableTreeNode(text)
+                        newVRoot.add(node)
+                    }
+                } else {
+                    if (text != "virtualRoot") {
+                        val node = DefaultMutableTreeNode(text)
+                        newVRoot.add(node)
+                    }
+                }
+            }
+        }
+
+        leftTree!!.setRootVisible(false)
+        leftTree!!.setModel(DefaultTreeModel(newVRoot))
+
+        if (mouseClickListener == null) {
+            mouseClickListener = MouseClickListener(this, leftTree!!, dir)
+        }
+
+        leftTree!!.removeMouseListener(mouseClickListener)
+        leftTree!!.addMouseListener(mouseClickListener)
+    }
+
     fun flushLeftTree(dir: String, virtualRoot: DefaultMutableTreeNode) {
+        if (showAsList!!.isSelected) {
+            flushLeftTreeAsList(dir, virtualRoot)
+            return
+        }
+
         leftTree!!.model = null
         rightTree!!.model = null
 
@@ -367,6 +426,20 @@ class GradleTreeForm {
         if (parentPath.pathCount > 1) {
             tree.collapsePath(parentPath)
         }
+    }
+
+    private fun convert2Set(parentPath: TreePath): TreeSet<String> {
+        val treeSet = TreeSet<String>()
+        val parentNode: TreeNode = parentPath.lastPathComponent as DefaultMutableTreeNode
+        val mutableTreeNode = parentNode as DefaultMutableTreeNode
+        showGroup(mutableTreeNode)
+        treeSet.add(mutableTreeNode.userObject.toString())
+        for (i in 0 until parentNode.childCount) {
+            val childNode: TreeNode = parentNode.getChildAt(i)
+            val childPath: TreePath = parentPath.pathByAddingChild(childNode)
+            treeSet.addAll(convert2Set(childPath))
+        }
+        return treeSet
     }
 
     private fun showGroup(node: DefaultMutableTreeNode) {
