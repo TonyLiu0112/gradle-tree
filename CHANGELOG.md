@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2024-05-17
+
+### Changed
+
+- support for idea of new version 2024.2
+
 ## [1.0.9] - 2024-02-21
 
 ### Changed
