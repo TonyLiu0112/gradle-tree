@@ -16,9 +16,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.tony.liu.plugins.gradle.tree.context.FileContext
 import com.tony.liu.plugins.gradle.tree.listeners.DocumentChangeListener
 import com.tony.liu.plugins.gradle.tree.swing.GradleTreeForm
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.beans.PropertyChangeListener
 import java.io.File
 import javax.swing.JComponent
@@ -37,6 +35,7 @@ class GradleTreeEditor(
     private var dir: String = File(file.path).parent
     private val myUserDataHolder = UserDataHolderBase()
     private var inited: Boolean = false
+    private val scope = CoroutineScope(Job() + Dispatchers.Default)
 
     private fun doInit() {
         editor = createEditorComponent()
@@ -92,9 +91,8 @@ class GradleTreeEditor(
         return editorFactory.createEditor(document, project) as EditorEx
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun createPanel(): JPanel {
-        GlobalScope.launch {
+        scope.launch {
             gradleTreeForm.disableRefreshBtn()
             gradleTreeForm.leftTreeShowLoading()
             initTreeData()
@@ -102,7 +100,7 @@ class GradleTreeEditor(
         }
 
         gradleTreeForm.bindRefreshBtnClick {
-            GlobalScope.launch {
+            scope.launch {
                 forceRefreshLeftTree()
                 gradleTreeForm.enableRefreshBtn()
             }

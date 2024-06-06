@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [1.1.1] - 2024-06-06
+
+### Changed
+
+- fix the "Internal classes usages" error. 
+
 ## [1.1.0] - 2024-05-17
 
 ### Changed
