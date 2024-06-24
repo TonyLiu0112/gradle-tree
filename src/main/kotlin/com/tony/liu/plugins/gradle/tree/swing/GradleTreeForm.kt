@@ -39,11 +39,10 @@ class GradleTreeForm {
     private var filter: JCheckBox? = null
 
     var thirdPanel: JPanel? = null
-    private var radioGroup: ButtonGroup? = null
     var showAsList: JCheckBox? = null
     private var showGroupCheckBox: JCheckBox? = null
-    private var expand: JRadioButton? = null
-    private var collapse: JRadioButton? = null
+    private var expand: JButton? = null
+    private var collapse: JButton? = null
 
     var lastPanel: JPanel? = null
     private var jSplitPane: JSplitPane? = null
@@ -62,12 +61,6 @@ class GradleTreeForm {
 
         leftTree!!.model = null
         rightTree!!.model = null
-
-        radioGroup = ButtonGroup()
-        radioGroup!!.add(expand)
-        radioGroup!!.add(collapse)
-
-        expand!!.isSelected = true
 
         moneyBtn!!.icon = SwingResource.giveCashIcon
 
@@ -195,10 +188,8 @@ class GradleTreeForm {
     private fun bindExpandBtnClick() {
         expand!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
-                if (expand!!.isSelected) {
-                    val root = leftTree!!.model.root
-                    expandAllNodes(leftTree!!, TreePath(root))
-                }
+                val root = leftTree!!.model.root
+                expandAllNodes(leftTree!!, TreePath(root))
             }
         })
     }
@@ -206,10 +197,8 @@ class GradleTreeForm {
     private fun bindCollapseBtnClick() {
         collapse!!.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent?) {
-                if (collapse!!.isSelected) {
-                    val root = leftTree!!.model.root
-                    collapseAllNodes(leftTree!!, TreePath(root))
-                }
+                val root = leftTree!!.model.root
+                collapseAllNodes(leftTree!!, TreePath(root))
             }
         })
     }
