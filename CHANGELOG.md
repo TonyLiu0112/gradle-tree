@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [1.1.2] - 2024-11-24
+
+### Changed
+
+- support for 2024.3
+
 ## [1.1.1] - 2024-06-06
 
 ### Changed
