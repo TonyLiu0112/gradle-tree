@@ -114,6 +114,9 @@ public class GradleTreeParser {
             artifactId = gaItem[1];
         } else {
             String[] gaItem = StringUtils.splitByWholeSeparator(coordinate, ":");
+            if (gaItem.length < 2) {
+                gaItem = StringUtils.splitByWholeSeparator(coordinate, " ");
+            }
             groupId = gaItem[0];
             artifactId = gaItem[1];
             if (gaItem.length < 3) {
