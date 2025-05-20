@@ -73,7 +73,7 @@
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="filter"/>
+              <text value="Filter"/>
             </properties>
           </component>
           <hspacer id="7d6ec">
@@ -151,22 +151,6 @@
               <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <component id="ebc70" class="javax.swing.JRadioButton" binding="expand">
-            <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="expend"/>
-            </properties>
-          </component>
-          <component id="49174" class="javax.swing.JRadioButton" binding="collapse">
-            <constraints>
-              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="collase"/>
-            </properties>
-          </component>
           <component id="46a27" class="javax.swing.JCheckBox" binding="showGroupCheckBox">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -181,6 +165,22 @@
             </constraints>
             <properties>
               <text value="Show as List"/>
+            </properties>
+          </component>
+          <component id="c6d0c" class="javax.swing.JButton" binding="expand">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Expand All"/>
+            </properties>
+          </component>
+          <component id="e6d81" class="javax.swing.JButton" binding="collapse">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Collapse All"/>
             </properties>
           </component>
         </children>
