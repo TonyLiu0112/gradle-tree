@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+## [1.1.3] - 2025-08-24
+
+### Changed
+
+- support for 252.*
+
 ## [1.1.3] - 2025-05-20
 
 ### Changed
