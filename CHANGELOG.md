@@ -34,6 +34,7 @@
 ### Changed
 
 - support for idea of new version 2024.1
+- fix some bugs
 
 ## [1.0.8] - 2024-01-30
 
